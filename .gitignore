@@ -3,3 +3,12 @@
 ################################################################################
 
 /.vs/NowPlaying4mastodon/v15
+/NowPlaying4mastodon/bin
+/NowPlaying4mastodon/obj
+/oAuth2Client/bin
+/oAuth2Client/obj
+/oAuth2Client.Test/bin/Release
+/oAuth2Client.Test/obj
+/packages
+/SpotifyApi/bin
+/SpotifyApi/obj
