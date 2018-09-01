@@ -14,17 +14,14 @@
     <Setting Name="Spotify_oAuth_scope" Type="System.String" Scope="Application">
       <Value Profile="(Default)">user-read-playback-state,user-modify-playback-state</Value>
     </Setting>
-    <Setting Name="Spotify_ClientId" Type="System.String" Scope="Application">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="Spotify_ClientSecret" Type="System.String" Scope="Application">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">48c33e4f31cf48fcb45e475a97afce03</Value>
     </Setting>
     <Setting Name="Mastodon_ClientKey" Type="System.String" Scope="Application">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">399579fb41743ce1b1d6c1affbf3eff970a5a53be0481fc38f6186b0773cc5f6</Value>
     </Setting>
     <Setting Name="Mastodon_ClientSecret" Type="System.String" Scope="Application">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">11470ba3fb6c2027e19abc5f647463761d5b821a08512e6470ac2025c851f94b</Value>
     </Setting>
     <Setting Name="Mastodon_Access_token" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -58,6 +55,12 @@
     </Setting>
     <Setting Name="Spotify_Markets" Type="System.String" Scope="User">
       <Value Profile="(Default)">ES</Value>
+    </Setting>
+    <Setting Name="Spotify_ClientId" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">34675e91bb8f408faf548bee2a863b6c</Value>
+    </Setting>
+    <Setting Name="AppName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">なうぷれ for Mastodon</Value>
     </Setting>
   </Settings>
 </SettingsFile>

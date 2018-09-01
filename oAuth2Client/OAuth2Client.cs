@@ -10,7 +10,7 @@ using System.Windows.Forms;
 namespace commonUtil.oAuth2
 {
 
-	public class Client : Form
+	public class Client : Form, IDisposable
 	{
 		private WebBrowser wb1 = null;
 		private oAuth2Request _oAuth2Request = null;

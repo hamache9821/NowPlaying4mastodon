@@ -21,10 +21,15 @@ namespace NowPlaying4mastodon
 
 		private Dispatcher spotifyApi = null;
 
+		private CurrentPlayback PrevPlayback = null;
 		private CurrentPlayback CurrentPlayback = null;
 		private AvailableDevices AvailableDevices = null;
 
 		private string LastTootIds = "";
+
+		private string repeatState = "off";
+
+		private string playState = "";
 
 
 		/// <summary>
@@ -37,6 +42,7 @@ namespace NowPlaying4mastodon
 
 			//イベントハンドラ
 			seekBarPlayPos.MouseUp += TrackBar1_MouseUp;
+			trackBarVolume.MouseUp += TrackBarVolume_MouseUp;
 			tsmConntctionSettings.Click += tsmConntctionSettings_Click;
 			tsmPostSettings.Click += tsmPostSettings_Click;
 			tsmReload.Click += TsmReload_Click;
@@ -55,22 +61,7 @@ namespace NowPlaying4mastodon
 			initSpotifySettings();
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void MainForm_Activated(object sender, EventArgs e)
-		{
-			//if (spotifyApi == null)
-			//{
-			//	tpsSpotifyApiStatus.Text = "認証まだ";
-			//	return;
-			//}
-
-			//setCurrentPlayback(0);
-		}
-
+		#region"【form events】"
 		/// <summary>
 		/// 
 		/// </summary>
@@ -91,6 +82,24 @@ namespace NowPlaying4mastodon
 		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void MainForm_Activated(object sender, EventArgs e)
+		{
+			//if (spotifyApi == null)
+			//{
+			//	tpsSpotifyApiStatus.Text = "認証まだ";
+			//	return;
+			//}
+
+			//setCurrentPlayback(0);
+
+			//SetPlaybackToResume();
+		}
+
+		/// <summary>
 		/// seekbar制御
 		/// </summary>
 		/// <param name="sender"></param>
@@ -99,6 +108,9 @@ namespace NowPlaying4mastodon
 		{
 			this.Invoke((Action)(() =>
 			{
+				//test
+				//setCurrentPlayback(0);
+
 				if (seekBarPlayPos.Value < seekBarPlayPos.Maximum - timer1.Interval)
 				{
 					//seek進める
@@ -113,89 +125,121 @@ namespace NowPlaying4mastodon
 				}
 			}));
 		}
+		#endregion
 
-
-		private enum PlayerStatus
+		#region"【button events】"
+		/// <summary>
+		/// spotify:次トラックへ
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void btnNext_Click(object sender, EventArgs e)
 		{
-			PREV,
-			NEXT,
-			PAUSE,
-			SEEK
-
+			setSpotifyPlayerStatus(PlayerStatus.NEXT);
 		}
 
-
-
-
+		/// <summary>
+		/// spotify:前トラックへ
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void btnPrevious_Click(object sender, EventArgs e)
+		{
+			setSpotifyPlayerStatus(PlayerStatus.PREV);
+		}
 
 		/// <summary>
-		/// spotifyプレイヤー制御
+		/// 停止/再開
 		/// </summary>
-		/// <param name="ps"></param>
-		private void setSpotifyPlayerStatus(PlayerStatus ps)
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void btnPlayPause_Click(object sender, EventArgs e)
 		{
-			if (spotifyApi == null)
+			if (timer1.Enabled)
 			{
-				tpsSpotifyApiStatus.Text = "UnAuthorized.";
-				tpsSpotifyApiStatus.ForeColor = Color.Red;
-				return;
+				setSpotifyPlayerStatus(PlayerStatus.PAUSE);
 			}
-
-			AvailableDevices = spotifyApi.GetAvailableDevices();
-
-			if (AvailableDevices == null) return;
-
-
-			Device d = null;
-
-			foreach (Device dev in AvailableDevices.devices)
+			else
 			{
-				if (dev.is_active)
-				{
-					d = dev;
+
+			}
+		}
+
+		/// <summary>
+		/// リピート設定
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void btnRepeat_Click(object sender, EventArgs e)
+		{
+			//ステータス送り
+			switch (repeatState)
+			{
+				case "off":
+					repeatState = "context";
 					break;
-				}
+
+				case "track":
+					repeatState = "off";
+					break;
+
+				case "context":
+					repeatState = "track";
+					break;
 			}
+
+			//ボタン表示設定
+			setRepeatButtonStyle(repeatState);
+
+			//ステータス変更
+			spotifyApi.SetRepeatStatus(repeatState);
+		}
+
+		/// <summary>
+		/// 音量設定ボタン
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void btnMute_Click(object sender, EventArgs e)
+		{
+			if (trackBarVolume.Value == 0)
+			{
+				trackBarVolume.Value = 50;
+			}
+			else if (trackBarVolume.Value <= 50)
+			{
+				trackBarVolume.Value = 100;
+			}
+			else
+			{
+				trackBarVolume.Value = 0;
+			}
+
+			setVolume();
+			setMuteButtonStyle();
+		}
+
+		/// <summary>
+		/// 再生デバイス切替ボタン
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void btnSwitchDevice_Click(object sender, System.EventArgs e)
+		{
+			Device d = getDeviceByName(cmbDeviceList.Text);
 
 			if (d == null) return;
 
+			spotifyApi.SetTransferDevice(new TransferRequest() { device_ids = new List<string>() { d.id }, play = true });
 
-			switch (ps)
-			{
-				case PlayerStatus.NEXT:
-					spotifyApi.SetPlaybackToNextTrack(d);
-					break;
+			setAvailableDevices(1000);
 
-				case PlayerStatus.PREV:
-					spotifyApi.SetPlaybackToPreviousTrack(d);
-					break;
-
-				case PlayerStatus.PAUSE:
-					spotifyApi.SetPlaybackToPause(d);
-					break;
-
-				case PlayerStatus.SEEK:
-					spotifyApi.SetSeekPosition(d, seekBarPlayPos.Value);
-					break;
-
-				default:
-					return;
-
-			}
-
-			//曲情報を更新
-			setCurrentPlayback(500);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		private void setSettings()
-		{
-			tpsVisiblity.Text = Properties.Settings.Default.Mastodon_Toot_Visiblity;
-		}
 
-		#region"【イベントハンドラ】"
+		#endregion
+
+		#region"【menu events】"
 		/// <summary>
 		/// 接続設定
 		/// </summary>
@@ -205,7 +249,7 @@ namespace NowPlaying4mastodon
 		{
 			try
 			{
-				using (dlgConfig c = new dlgConfig() { spotifyoAuth2Request = this.spotifyoAuth2Request, spotifyoAuth2Response = this.spotifyoAuth2Response })
+				using (dlgConnectionSettings c = new dlgConnectionSettings() { spotifyoAuth2Request = this.spotifyoAuth2Request, spotifyoAuth2Response = this.spotifyoAuth2Response })
 				{
 					c.ShowDialog(this);
 					spotifyoAuth2Response = c.spotifyoAuth2Response;
@@ -223,8 +267,19 @@ namespace NowPlaying4mastodon
 
 				if (spotifyoAuth2Request != null && spotifyoAuth2Response != null)
 					spotifyApi = new Dispatcher(spotifyoAuth2Request, spotifyoAuth2Response);
-			}
 
+				if (spotifyApi == null)
+				{
+					tpsSpotifyApiStatus.Text = "UnAuthorized.";
+				}
+				else
+				{
+					tpsSpotifyApiStatus.Text = "Connected.";
+
+					//曲情報を更新
+					setCurrentPlayback(100);
+				}
+			}
 		}
 
 		/// <summary>
@@ -271,35 +326,129 @@ namespace NowPlaying4mastodon
 			TootNowPlaying(true);
 		}
 
-		/// <summary>
-		/// spotify:次トラックへ
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void btnNext_Click(object sender, EventArgs e)
+
+		#endregion
+
+
+
+
+		private void TrackBarVolume_MouseUp(object sender, MouseEventArgs e)
 		{
-			setSpotifyPlayerStatus(PlayerStatus.NEXT);
+			setVolume();
+			setMuteButtonStyle();
+		}
+
+
+
+
+		private enum PlayerStatus
+		{
+			PREV,
+			NEXT,
+			PAUSE,
+			SEEK
+
+		}
+
+
+		#region"【spotify api control method】"
+		/// <summary>s
+		/// spotify再生ステータス変更
+		/// </summary>
+		/// <param name="ps"></param>
+		private void setSpotifyPlayerStatus(PlayerStatus ps)
+		{
+			Device d = getAvailableDevice();
+
+			if (d == null) return;
+
+			switch (ps)
+			{
+				case PlayerStatus.NEXT:
+					spotifyApi.SetPlaybackToNextTrack(d);
+					break;
+
+				case PlayerStatus.PREV:
+					spotifyApi.SetPlaybackToPreviousTrack(d);
+					break;
+
+				case PlayerStatus.PAUSE:
+					spotifyApi.SetPlaybackToPause(d);
+					break;
+
+				case PlayerStatus.SEEK:
+					spotifyApi.SetSeekPosition(d, seekBarPlayPos.Value);
+					break;
+
+				default:
+					return;
+
+			}
+
+			//曲情報を更新
+			setCurrentPlayback(1000);
+		}
+
+
+		/// <summary>
+		/// 音量取得
+		/// </summary>
+		private void getVolume()
+		{
+			CurrentPlayback = spotifyApi.GetCurrentPlayback(Properties.Settings.Default.Spotify_Markets);
+
+			if (CurrentPlayback == null) return;
+
+			trackBarVolume.Value = CurrentPlayback.device.volume_percent;
+
+			setMuteButtonStyle();
 		}
 
 		/// <summary>
-		/// spotify:前トラックへ
+		/// 音量設定
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void btnPrevious_Click(object sender, EventArgs e)
+		private void setVolume()
 		{
-			setSpotifyPlayerStatus(PlayerStatus.PREV);
+			Device d = getAvailableDevice();
+
+			if (d == null) return;
+
+			spotifyApi.SetVolume(d, trackBarVolume.Value);
+
+			setMuteButtonStyle();
 		}
 
-		/// <summary>
-		/// 停止
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void button3_Click(object sender, EventArgs e)
+
+		private void getShuffleState()
 		{
-			setSpotifyPlayerStatus(PlayerStatus.PAUSE);
+			if (CurrentPlayback == null) return;
+
+			//trackBarVolume.Value = CurrentPlayback.shuffle_state;
+
+			setShuffleButtonStyle();
+
 		}
+
+		private void setShuffleState()
+		{
+
+		}
+
+		#endregion
+
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void setSettings()
+		{
+			tpsVisiblity.Text = Properties.Settings.Default.Mastodon_Toot_Visiblity;
+		}
+
+		#region"【イベントハンドラ】"
+
 
 		/// <summary>
 		/// seek
@@ -367,7 +516,7 @@ namespace NowPlaying4mastodon
 
 				if (Properties.Settings.Default.Mastodon_Toot_PostArtwork)
 				{
-					var sFilename = string.Format(@"c:\temp\{0}.png", CurrentPlayback.item.id);
+					var sFilename = string.Format(@"{0}{1}.png", Path.GetTempPath(), CurrentPlayback.item.id);
 					pbArtwork.BackgroundImage.Save(sFilename);
 
 					//アートワーク付
@@ -383,6 +532,10 @@ namespace NowPlaying4mastodon
 							, spoiler_text => (Properties.Settings.Default.Mastodon_Toot_SetNSFW && lblExplicit.Visible) ? "Explicit" : ""
 							);
 					}
+
+					//削除
+					File.Delete(sFilename);
+
 				}
 				else
 				{
@@ -397,7 +550,7 @@ namespace NowPlaying4mastodon
 
 				tpsLastPostDate.Text = DateTime.Now.ToString();
 			}
-			finally
+			catch
 			{
 			}
 		}
@@ -468,6 +621,7 @@ namespace NowPlaying4mastodon
 				}
 
 				//再生情報を取得
+				PrevPlayback = CurrentPlayback;
 				CurrentPlayback = spotifyApi.GetCurrentPlayback(Properties.Settings.Default.Spotify_Markets);
 
 				if (CurrentPlayback == null)
@@ -482,10 +636,11 @@ namespace NowPlaying4mastodon
 				tpsSpotifyApiStatus.Text = "Connected.";
 				tpsSpotifyApiStatus.ForeColor = Color.Black;
 
-				if (pbArtwork.BackgroundImage != null)
-					pbArtwork.BackgroundImage.Dispose();
-
-				pbArtwork.BackgroundImage = GetImage(CurrentPlayback.item.album.images[1].url);
+				if (PrevPlayback == null || PrevPlayback.item.album.id != CurrentPlayback.item.album.id)
+				{
+					if (pbArtwork.BackgroundImage != null) pbArtwork.BackgroundImage.Dispose();
+					pbArtwork.BackgroundImage = GetImage(CurrentPlayback.item.album.images[1].url);
+				}
 
 				if (lblAlubum.Text != CurrentPlayback.item.album.name)
 					lblAlubum.Text = CurrentPlayback.item.album.name;
@@ -516,24 +671,38 @@ namespace NowPlaying4mastodon
 
 				timer1.Enabled = CurrentPlayback.is_playing;
 
-				if (timer1.Enabled)
-				{
-					timer1.Start();
-				}
-				else
-				{
-					timer1.Stop();
-				}
+				setPlayButtonStyle(timer1.Enabled);
+
+				//if (timer1.Enabled)
+				//{
+				//	timer1.Start();
+				//}
+				//else
+				//{
+				//	timer1.Stop();
+				//}
+
+				//リピート設定
+				setRepeatButtonStyle(CurrentPlayback.repeat_state);
+
+				//シャッフル設定
+
+				//ボリューム設定
+				trackBarVolume.Value = CurrentPlayback.device.volume_percent;
+				setMuteButtonStyle();
+
+				//再生デバイス
+				setAvailableDevices(0);
 
 				//title
 				if (Properties.Settings.Default.ShowTitlebarInfo)
-					Text = lblTrackName.Text + " / " + lblTrackArtist.Text + " with なうぷれ for Mastodon";
+					Text = string.Format("{0} / {1} with {2}", lblTrackName.Text ,lblTrackArtist.Text, Properties.Settings.Default.AppName);
 
 				//自動toot
 				if (Properties.Settings.Default.Mastodon_Toot_TrackChangedAutoPost)
 					TootNowPlaying(false);
 			}
-			finally
+			catch
 			{
 			}
 		}
@@ -605,6 +774,152 @@ namespace NowPlaying4mastodon
 			}
 
 			return new Bitmap(imgStream);
+		}
+
+
+		/// <summary>
+		/// リピートボタン表示設定
+		/// </summary>
+		/// <param name="state"></param>
+		private void setRepeatButtonStyle(string state)
+		{
+			switch (state)
+			{
+				case "off":
+					btnRepeat.ForeColor = Color.DarkGray;
+					btnRepeat.Text = "🔁";
+
+					break;
+
+				case "track":
+					btnRepeat.ForeColor = Color.LimeGreen;
+					btnRepeat.Text = "🔂 ";
+					break;
+
+				case "context":
+					btnRepeat.ForeColor = Color.LimeGreen;
+					btnRepeat.Text = "🔁";
+					break;
+			}
+		}
+
+
+		private void setPlayButtonStyle(bool state)
+		{
+			if (state)
+			{
+				timer1.Start();
+				btnPlayPause.Text = "⏸️";
+			}
+			else
+			{
+				timer1.Stop();
+				btnPlayPause.Text = "▶️";
+			}
+		}
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private void setMuteButtonStyle()
+		{
+			if(trackBarVolume.Value == 0)
+			{
+				btnMute.Text = "🔇";
+
+			}
+			else if (trackBarVolume.Value < 50)
+				{
+				btnMute.Text = "🔉 ";
+			}
+			else
+			{
+				btnMute.Text = "🔊";
+			}
+		}
+
+
+
+
+		private async void setAvailableDevices(Int32 wait)
+		{
+			cmbDeviceList.Items.Clear();
+
+			if (wait != 0)
+			{
+				await Task.Delay(wait);
+			}
+
+			AvailableDevices = spotifyApi.GetAvailableDevices();
+
+			if (AvailableDevices == null) return;
+
+			foreach (Device dev in AvailableDevices.devices)
+			{
+				cmbDeviceList.Items.Add(dev.name);
+
+				if (dev.is_active)
+				{
+					cmbDeviceList.Text = dev.name;
+				}
+			}
+		}
+
+		private Device getAvailableDevice()
+		{
+			foreach (Device dev in AvailableDevices.devices)
+			{
+				if (dev.is_active)
+				{
+					return dev;
+				}
+			}
+			return null;
+		}
+
+		private Device getDeviceByName(string name)
+		{
+			foreach (Device dev in AvailableDevices.devices)
+			{
+				if (dev.name == name)
+				{
+					return dev;
+				}
+			}
+			return null;
+		}
+
+		private void btnShuffle_Click(object sender, EventArgs e)
+		{
+			if (CurrentPlayback == null) return;
+
+			CurrentPlayback.shuffle_state = !CurrentPlayback.shuffle_state;
+
+			setShuffleButtonStyle();
+
+			Device d = getAvailableDevice();
+
+			if (d == null) return;
+
+			spotifyApi.SetSuffleStatus(d,CurrentPlayback.shuffle_state);
+		}
+
+		/// <summary>
+		/// シャッフルボタン表示設定
+		/// </summary>
+		private void setShuffleButtonStyle()
+		{
+			if (CurrentPlayback == null) return;
+
+			if (CurrentPlayback.shuffle_state)
+			{
+				btnShuffle.ForeColor = Color.LimeGreen;
+			}
+			else
+			{
+				btnShuffle.ForeColor = Color.DarkGray;
+			}
 		}
 	}
 }

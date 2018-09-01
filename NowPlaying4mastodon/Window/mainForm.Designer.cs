@@ -37,10 +37,10 @@
 			this.lblPlayPos = new System.Windows.Forms.Label();
 			this.lblTrackTime = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.button1 = new System.Windows.Forms.Button();
+			this.btnShuffle = new System.Windows.Forms.Button();
 			this.btnPrevious = new System.Windows.Forms.Button();
-			this.button5 = new System.Windows.Forms.Button();
-			this.button3 = new System.Windows.Forms.Button();
+			this.btnRepeat = new System.Windows.Forms.Button();
+			this.btnPlayPause = new System.Windows.Forms.Button();
 			this.btnNext = new System.Windows.Forms.Button();
 			this.lblTrackCount = new System.Windows.Forms.Label();
 			this.lblReleaseDate = new System.Windows.Forms.Label();
@@ -50,10 +50,11 @@
 			this.lblAlubum = new System.Windows.Forms.Label();
 			this.pbArtwork = new System.Windows.Forms.PictureBox();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-			this.tsmReload = new System.Windows.Forms.ToolStripMenuItem();
 			this.ToolStripMenuItem_Settings = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmConntctionSettings = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmPostSettings = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmReload = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmNowPlaying = new System.Windows.Forms.ToolStripMenuItem();
 			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -64,7 +65,12 @@
 			this.tpsVisiblity = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tpsLastPostDate = new System.Windows.Forms.ToolStripStatusLabel();
-			this.tsmNowPlaying = new System.Windows.Forms.ToolStripMenuItem();
+			this.trackBarVolume = new System.Windows.Forms.TrackBar();
+			this.panel3 = new System.Windows.Forms.Panel();
+			this.btnMute = new System.Windows.Forms.Button();
+			this.panel4 = new System.Windows.Forms.Panel();
+			this.cmbDeviceList = new System.Windows.Forms.ComboBox();
+			this.btnSwitchDevice = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.panel2.SuspendLayout();
@@ -73,6 +79,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.pbArtwork)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarVolume)).BeginInit();
+			this.panel3.SuspendLayout();
+			this.panel4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -87,6 +96,8 @@
 			// tabPage1
 			// 
 			this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage1.Controls.Add(this.panel4);
+			this.tabPage1.Controls.Add(this.panel3);
 			this.tabPage1.Controls.Add(this.lblExplicit);
 			this.tabPage1.Controls.Add(this.panel2);
 			this.tabPage1.Controls.Add(this.panel1);
@@ -160,25 +171,26 @@
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.button1);
+			this.panel1.Controls.Add(this.btnShuffle);
 			this.panel1.Controls.Add(this.btnPrevious);
-			this.panel1.Controls.Add(this.button5);
-			this.panel1.Controls.Add(this.button3);
+			this.panel1.Controls.Add(this.btnRepeat);
+			this.panel1.Controls.Add(this.btnPlayPause);
 			this.panel1.Controls.Add(this.btnNext);
-			this.panel1.Location = new System.Drawing.Point(196, 283);
+			this.panel1.Location = new System.Drawing.Point(178, 278);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(337, 44);
+			this.panel1.Size = new System.Drawing.Size(285, 44);
 			this.panel1.TabIndex = 11;
 			// 
-			// button1
+			// btnShuffle
 			// 
-			this.button1.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.button1.Location = new System.Drawing.Point(0, 0);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(40, 40);
-			this.button1.TabIndex = 9;
-			this.button1.Text = "🔀";
-			this.button1.UseVisualStyleBackColor = true;
+			this.btnShuffle.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.btnShuffle.Location = new System.Drawing.Point(0, 0);
+			this.btnShuffle.Name = "btnShuffle";
+			this.btnShuffle.Size = new System.Drawing.Size(40, 40);
+			this.btnShuffle.TabIndex = 9;
+			this.btnShuffle.Text = "🔀";
+			this.btnShuffle.UseVisualStyleBackColor = true;
+			this.btnShuffle.Click += new System.EventHandler(this.btnShuffle_Click);
 			// 
 			// btnPrevious
 			// 
@@ -191,27 +203,28 @@
 			this.btnPrevious.UseVisualStyleBackColor = true;
 			this.btnPrevious.Click += new System.EventHandler(this.btnPrevious_Click);
 			// 
-			// button5
+			// btnRepeat
 			// 
-			this.button5.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.button5.Location = new System.Drawing.Point(240, 0);
-			this.button5.Name = "button5";
-			this.button5.Size = new System.Drawing.Size(40, 40);
-			this.button5.TabIndex = 9;
-			this.button5.Text = "🔁";
-			this.button5.UseVisualStyleBackColor = true;
+			this.btnRepeat.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.btnRepeat.ForeColor = System.Drawing.Color.DarkGray;
+			this.btnRepeat.Location = new System.Drawing.Point(240, 0);
+			this.btnRepeat.Name = "btnRepeat";
+			this.btnRepeat.Size = new System.Drawing.Size(40, 40);
+			this.btnRepeat.TabIndex = 9;
+			this.btnRepeat.Text = "🔁";
+			this.btnRepeat.UseVisualStyleBackColor = true;
+			this.btnRepeat.Click += new System.EventHandler(this.btnRepeat_Click);
 			// 
-			// button3
+			// btnPlayPause
 			// 
-			this.button3.Enabled = false;
-			this.button3.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.button3.Location = new System.Drawing.Point(120, 0);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(40, 40);
-			this.button3.TabIndex = 9;
-			this.button3.Text = "⏯";
-			this.button3.UseVisualStyleBackColor = true;
-			this.button3.Click += new System.EventHandler(this.button3_Click);
+			this.btnPlayPause.Font = new System.Drawing.Font("Yu Gothic UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.btnPlayPause.Location = new System.Drawing.Point(120, 0);
+			this.btnPlayPause.Name = "btnPlayPause";
+			this.btnPlayPause.Size = new System.Drawing.Size(40, 40);
+			this.btnPlayPause.TabIndex = 9;
+			this.btnPlayPause.Text = "⏸";
+			this.btnPlayPause.UseVisualStyleBackColor = true;
+			this.btnPlayPause.Click += new System.EventHandler(this.btnPlayPause_Click);
 			// 
 			// btnNext
 			// 
@@ -305,12 +318,6 @@
 			this.menuStrip1.TabIndex = 9;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
-			// tsmReload
-			// 
-			this.tsmReload.Name = "tsmReload";
-			this.tsmReload.Size = new System.Drawing.Size(34, 20);
-			this.tsmReload.Text = "🔄 ";
-			// 
 			// ToolStripMenuItem_Settings
 			// 
 			this.ToolStripMenuItem_Settings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -323,14 +330,26 @@
 			// tsmConntctionSettings
 			// 
 			this.tsmConntctionSettings.Name = "tsmConntctionSettings";
-			this.tsmConntctionSettings.Size = new System.Drawing.Size(152, 22);
+			this.tsmConntctionSettings.Size = new System.Drawing.Size(122, 22);
 			this.tsmConntctionSettings.Text = "接続設定";
 			// 
 			// tsmPostSettings
 			// 
 			this.tsmPostSettings.Name = "tsmPostSettings";
-			this.tsmPostSettings.Size = new System.Drawing.Size(152, 22);
+			this.tsmPostSettings.Size = new System.Drawing.Size(122, 22);
 			this.tsmPostSettings.Text = "投稿設定";
+			// 
+			// tsmReload
+			// 
+			this.tsmReload.Name = "tsmReload";
+			this.tsmReload.Size = new System.Drawing.Size(34, 20);
+			this.tsmReload.Text = "🔄 ";
+			// 
+			// tsmNowPlaying
+			// 
+			this.tsmNowPlaying.Name = "tsmNowPlaying";
+			this.tsmNowPlaying.Size = new System.Drawing.Size(31, 20);
+			this.tsmNowPlaying.Text = "♬";
 			// 
 			// statusStrip1
 			// 
@@ -400,11 +419,65 @@
 			this.tpsLastPostDate.Size = new System.Drawing.Size(120, 17);
 			this.tpsLastPostDate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// tsmNowPlaying
+			// trackBarVolume
 			// 
-			this.tsmNowPlaying.Name = "tsmNowPlaying";
-			this.tsmNowPlaying.Size = new System.Drawing.Size(31, 20);
-			this.tsmNowPlaying.Text = "♬";
+			this.trackBarVolume.Location = new System.Drawing.Point(49, 12);
+			this.trackBarVolume.Maximum = 100;
+			this.trackBarVolume.Name = "trackBarVolume";
+			this.trackBarVolume.Size = new System.Drawing.Size(115, 45);
+			this.trackBarVolume.TabIndex = 14;
+			this.trackBarVolume.TickStyle = System.Windows.Forms.TickStyle.None;
+			this.trackBarVolume.Value = 95;
+			// 
+			// panel3
+			// 
+			this.panel3.Controls.Add(this.btnMute);
+			this.panel3.Controls.Add(this.trackBarVolume);
+			this.panel3.Location = new System.Drawing.Point(8, 279);
+			this.panel3.Name = "panel3";
+			this.panel3.Size = new System.Drawing.Size(164, 45);
+			this.panel3.TabIndex = 15;
+			// 
+			// btnMute
+			// 
+			this.btnMute.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.btnMute.Location = new System.Drawing.Point(3, 3);
+			this.btnMute.Name = "btnMute";
+			this.btnMute.Size = new System.Drawing.Size(40, 40);
+			this.btnMute.TabIndex = 9;
+			this.btnMute.Text = "🔊";
+			this.btnMute.UseVisualStyleBackColor = true;
+			this.btnMute.Click += new System.EventHandler(this.btnMute_Click);
+			// 
+			// panel4
+			// 
+			this.panel4.Controls.Add(this.cmbDeviceList);
+			this.panel4.Controls.Add(this.btnSwitchDevice);
+			this.panel4.Location = new System.Drawing.Point(514, 291);
+			this.panel4.Name = "panel4";
+			this.panel4.Size = new System.Drawing.Size(276, 33);
+			this.panel4.TabIndex = 16;
+			// 
+			// cmbDeviceList
+			// 
+			this.cmbDeviceList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cmbDeviceList.Font = new System.Drawing.Font("Meiryo UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.cmbDeviceList.FormattingEnabled = true;
+			this.cmbDeviceList.Location = new System.Drawing.Point(0, 0);
+			this.cmbDeviceList.Name = "cmbDeviceList";
+			this.cmbDeviceList.Size = new System.Drawing.Size(180, 27);
+			this.cmbDeviceList.TabIndex = 1;
+			// 
+			// btnSwitchDevice
+			// 
+			this.btnSwitchDevice.Font = new System.Drawing.Font("Yu Gothic UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.btnSwitchDevice.Location = new System.Drawing.Point(186, 0);
+			this.btnSwitchDevice.Name = "btnSwitchDevice";
+			this.btnSwitchDevice.Size = new System.Drawing.Size(40, 27);
+			this.btnSwitchDevice.TabIndex = 9;
+			this.btnSwitchDevice.Text = "→";
+			this.btnSwitchDevice.UseVisualStyleBackColor = true;
+			this.btnSwitchDevice.Click += btnSwitchDevice_Click;
 			// 
 			// mainForm
 			// 
@@ -432,12 +505,14 @@
 			this.menuStrip1.PerformLayout();
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.trackBarVolume)).EndInit();
+			this.panel3.ResumeLayout(false);
+			this.panel3.PerformLayout();
+			this.panel4.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
 		}
-
-
 		#endregion
 		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.MenuStrip menuStrip1;
@@ -445,11 +520,11 @@
 		private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_Settings;
 		private System.Windows.Forms.ToolStripMenuItem tsmConntctionSettings;
 		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.Button button5;
+		private System.Windows.Forms.Button btnRepeat;
 		private System.Windows.Forms.Button btnNext;
-		private System.Windows.Forms.Button button3;
+		private System.Windows.Forms.Button btnPlayPause;
 		private System.Windows.Forms.Button btnPrevious;
-		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Button btnShuffle;
 		private System.Windows.Forms.Label lblTrackTime;
 		private System.Windows.Forms.Label lblTrackCount;
 		private System.Windows.Forms.Label lblReleaseDate;
@@ -475,6 +550,12 @@
 		private System.Windows.Forms.ToolStripStatusLabel tpsVisiblity;
 		private System.Windows.Forms.Label lblExplicit;
 		private System.Windows.Forms.ToolStripMenuItem tsmNowPlaying;
+		private System.Windows.Forms.Panel panel3;
+		private System.Windows.Forms.Button btnMute;
+		private System.Windows.Forms.TrackBar trackBarVolume;
+		private System.Windows.Forms.Panel panel4;
+		private System.Windows.Forms.ComboBox cmbDeviceList;
+		private System.Windows.Forms.Button btnSwitchDevice;
 	}
 }
 

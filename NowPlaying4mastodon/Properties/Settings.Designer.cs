@@ -61,16 +61,7 @@ namespace NowPlaying4mastodon.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Spotify_ClientId {
-            get {
-                return ((string)(this["Spotify_ClientId"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("48c33e4f31cf48fcb45e475a97afce03")]
         public string Spotify_ClientSecret {
             get {
                 return ((string)(this["Spotify_ClientSecret"]));
@@ -79,7 +70,7 @@ namespace NowPlaying4mastodon.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("399579fb41743ce1b1d6c1affbf3eff970a5a53be0481fc38f6186b0773cc5f6")]
         public string Mastodon_ClientKey {
             get {
                 return ((string)(this["Mastodon_ClientKey"]));
@@ -88,7 +79,7 @@ namespace NowPlaying4mastodon.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("11470ba3fb6c2027e19abc5f647463761d5b821a08512e6470ac2025c851f94b")]
         public string Mastodon_ClientSecret {
             get {
                 return ((string)(this["Mastodon_ClientSecret"]));
@@ -224,6 +215,24 @@ namespace NowPlaying4mastodon.Properties {
             }
             set {
                 this["Spotify_Markets"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("34675e91bb8f408faf548bee2a863b6c")]
+        public string Spotify_ClientId {
+            get {
+                return ((string)(this["Spotify_ClientId"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("なうぷれ for Mastodon")]
+        public string AppName {
+            get {
+                return ((string)(this["AppName"]));
             }
         }
     }

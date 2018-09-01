@@ -6,39 +6,28 @@ using TootNet;
 
 namespace NowPlaying4mastodon
 {
-	public partial class dlgConfig : Form
+	public partial class dlgConnectionSettings : Form
 	{
 		Authorize _Authorize = null;
-
 		oAuth2Request _spotifyoAuth2Request = null;
 		oAuth2Response _spotifyoAuth2Response = null;
 
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		public dlgConfig()
+		public dlgConnectionSettings()
 		{
 			InitializeComponent();
-			Load += DlgConfig_Load;
-			FormClosing += DlgConfig_FormClosing;
+			Load += dlgConnectionSettings_Load;
+			FormClosing += dlgConnectionSettings_FormClosing;
 
-			txtMastodonUserInfo.Text = Properties.Settings.Default.Mastodon_Userinfo;
+			txtMastodonInstanceDomain.Text = Properties.Settings.Default.Mastodon_Userinfo;
 		}
 
-		private void DlgConfig_FormClosing(object sender, FormClosingEventArgs e)
-		{
-
-			Properties.Settings.Default.Mastodon_Userinfo = txtMastodonUserInfo.Text;
-			Properties.Settings.Default.Spotify_Markets = cmbTrackInfoRegin.Text;
-			Properties.Settings.Default.Save();
-		}
-
-		private void DlgConfig_Load(object sender, EventArgs e)
-		{
-			cmbTrackInfoRegin.Text = Properties.Settings.Default.Spotify_Markets;
-
-		}
-
+		#region"【property】"
+		/// <summary>
+		/// 
+		/// </summary>
 		public oAuth2Request spotifyoAuth2Request
 		{
 			get { return _spotifyoAuth2Request; }
@@ -46,25 +35,38 @@ namespace NowPlaying4mastodon
 
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public oAuth2Response spotifyoAuth2Response
 		{
 			get { return _spotifyoAuth2Response; }
 			set { _spotifyoAuth2Response = value; }
 
 		}
+		#endregion
+
+		#region"【event handler】"
+		private void dlgConnectionSettings_Load(object sender, EventArgs e)
+		{
+			cmbTrackInfoRegin.Text = Properties.Settings.Default.Spotify_Markets;
+		}
+
+		private void dlgConnectionSettings_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Properties.Settings.Default.Mastodon_Userinfo = txtMastodonInstanceDomain.Text;
+			Properties.Settings.Default.Spotify_Markets = cmbTrackInfoRegin.Text;
+			Properties.Settings.Default.Save();
+		}
 
 		/// <summary>
-		/// ますとどん認証ボタン
+		/// mastodon認証ボタン
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private async void btnOpenAuthorizeWindow_Click(object sender, EventArgs e)
 		{
-			string[] s = txtMastodonUserInfo.Text.Split('@');
-
-			if (s.Length != 2 || s[0] == string.Empty || s[1] == String.Empty)
-				return;
-
+			if (string.IsNullOrEmpty(txtMastodonInstanceDomain.Text.Trim())) return;
 
 			_Authorize = new Authorize()
 			{
@@ -72,30 +74,45 @@ namespace NowPlaying4mastodon
 			,
 				ClientSecret = Properties.Settings.Default.Mastodon_ClientSecret
 			};
+
 			try
 			{
-				await _Authorize.CreateApp(s[1], s[0], Scope.Write);
-
+				await _Authorize.CreateApp(txtMastodonInstanceDomain.Text.Trim(), Properties.Settings.Default.AppName, Scope.Write);
 
 				System.Diagnostics.Process.Start(_Authorize.GetAuthorizeUri());
 
 				panel1.Visible = true;
-
-
-				//oAuth2Request req = new oAuth2Request()
-				//{
-				//	auth_server_auth_endpoint = _Authorize.GetAuthorizeUri()
-				//	,redirect_uri =""
-				//};
-
-				//using (dlgWebBrowser c = new dlgWebBrowser(req))
-				//{
-				//	c.ShowDialog(this);
-				//}
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.ToString(), this.Name, MessageBoxButtons.OK);
+			}
+		}
+
+		/// <summary>
+		/// mastodon認証コード確認ボタン
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private async void btnAuthorizeCodeVerify_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				if (txtAuthorizeCode.Text == "") return;
+
+				Tokens Tokens = await _Authorize.AuthorizeWithCode(txtAuthorizeCode.Text);
+
+				if (Tokens != null)
+				{
+					Properties.Settings.Default.Mastodon_Access_token = Tokens.AccessToken;
+					Properties.Settings.Default.Save();
+
+					txtAuthorizeCode.Text = "";
+					panel1.Visible = false;
+				}
+			}
+			catch
+			{
 			}
 		}
 
@@ -121,31 +138,6 @@ namespace NowPlaying4mastodon
 				Properties.Settings.Default.Save();
 			}
 		}
-
-		private void dlgConfig_Load(object sender, EventArgs e)
-		{
-
-		}
-
-		private async void btnAuthorizeCodeVerify_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				Tokens Tokens = await _Authorize.AuthorizeWithCode(txtAuthorizeCode.Text);
-
-				if (Tokens != null)
-				{
-
-					Properties.Settings.Default.Mastodon_Access_token = Tokens.AccessToken;
-					Properties.Settings.Default.Save();
-
-					txtAuthorizeCode.Text = "";
-					panel1.Visible = false;
-				}
-			}
-			finally
-			{
-			}
-		}
+		#endregion
 	}
 }

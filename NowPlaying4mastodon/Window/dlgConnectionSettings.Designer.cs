@@ -1,6 +1,6 @@
 ﻿namespace NowPlaying4mastodon
 {
-	partial class dlgConfig
+	partial class dlgConnectionSettings
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -34,7 +34,7 @@
 			this.txtAuthorizeCode = new System.Windows.Forms.TextBox();
 			this.btnOpenMastodonAuthorization = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
-			this.txtMastodonUserInfo = new System.Windows.Forms.TextBox();
+			this.txtMastodonInstanceDomain = new System.Windows.Forms.TextBox();
 			this.btnOpenSpotifyAuthorization = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.cmbTrackInfoRegin = new System.Windows.Forms.ComboBox();
@@ -49,7 +49,7 @@
 			this.groupBox1.Controls.Add(this.panel1);
 			this.groupBox1.Controls.Add(this.btnOpenMastodonAuthorization);
 			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Controls.Add(this.txtMastodonUserInfo);
+			this.groupBox1.Controls.Add(this.txtMastodonInstanceDomain);
 			this.groupBox1.Location = new System.Drawing.Point(5, 13);
 			this.groupBox1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
 			this.groupBox1.Name = "groupBox1";
@@ -111,12 +111,12 @@
 			// 
 			// txtMastodonUserInfo
 			// 
-			this.txtMastodonUserInfo.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.txtMastodonUserInfo.Location = new System.Drawing.Point(10, 50);
-			this.txtMastodonUserInfo.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-			this.txtMastodonUserInfo.Name = "txtMastodonUserInfo";
-			this.txtMastodonUserInfo.Size = new System.Drawing.Size(593, 23);
-			this.txtMastodonUserInfo.TabIndex = 0;
+			this.txtMastodonInstanceDomain.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.txtMastodonInstanceDomain.Location = new System.Drawing.Point(10, 50);
+			this.txtMastodonInstanceDomain.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+			this.txtMastodonInstanceDomain.Name = "txtMastodonUserInfo";
+			this.txtMastodonInstanceDomain.Size = new System.Drawing.Size(593, 23);
+			this.txtMastodonInstanceDomain.TabIndex = 0;
 			// 
 			// btnOpenSpotifyAuthorization
 			// 
@@ -229,7 +229,7 @@
 			this.label3.TabIndex = 2;
 			this.label3.Text = "MarketRegion";
 			// 
-			// dlgConfig
+			// dlgConnectionSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -241,9 +241,8 @@
 			this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "dlgConfig";
+			this.Name = "dlgConnectionSettings";
 			this.Text = "接続設定";
-			this.Load += new System.EventHandler(this.dlgConfig_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.panel1.ResumeLayout(false);
@@ -259,7 +258,7 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Button btnOpenMastodonAuthorization;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox txtMastodonUserInfo;
+		private System.Windows.Forms.TextBox txtMastodonInstanceDomain;
 		private System.Windows.Forms.Button btnOpenSpotifyAuthorization;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.ComboBox cmbTrackInfoRegin;
